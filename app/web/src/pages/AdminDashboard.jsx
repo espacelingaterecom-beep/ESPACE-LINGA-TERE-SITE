@@ -38,6 +38,36 @@ function AdminDashboard() {
   const [fields, setFields] = useState([]);
   const [images, setImages] = useState([]);
 
+  const handleMigrate = async () => {
+    if (!window.confirm("Voulez-vous vraiment écraser les données Supabase par les données locales du fichier ?")) return;
+    setLoading(true);
+    try {
+      const languages = ['FR', 'SG', 'EN'];
+      let count = 0;
+
+      for (const lang of languages) {
+        const sections = translations[lang];
+        for (const [key, content] of Object.entries(sections)) {
+          const { error } = await supabase
+            .from('site_content')
+            .upsert({
+              section_key: key,
+              language_code: lang,
+              content: content,
+              updated_at: new Date()
+            }, { onConflict: 'section_key,language_code' });
+
+          if (error) throw error;
+          count++;
+        }
+      }
+      toast.success(`${count} sections ont été migrées vers Supabase avec succès !`);
+    } catch (error) {
+      toast.error("Erreur de migration : " + error.message);
+    }
+    setLoading(false);
+  };
+
   const sectionsList = [
     { id: 'home_hero', label: 'Accueil - En-tête', key: 'hero' },
     { id: 'home_stats', label: 'Accueil - Statistiques', key: 'stats' },
@@ -118,6 +148,10 @@ function AdminDashboard() {
     loadContent();
   }, [editingPage, editLang]);
 
+  const handleEdit = (section) => {
+    setEditingPage(section);
+  };
+
   const handleFieldChange = (key, newValue) => {
     setFields(fields.map(f => f.key === key ? { ...f, value: newValue } : f));
   };
@@ -182,6 +216,17 @@ function AdminDashboard() {
                 <nav className="space-y-3">
                   <button onClick={() => setActiveTab('content')} className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-black transition-all ${activeTab === 'content' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-muted-foreground hover:bg-muted/50'}`}><FileText className="h-5 w-5" /> Contenu</button>
                   <button onClick={() => setActiveTab('media')} className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-black transition-all ${activeTab === 'media' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-muted-foreground hover:bg-muted/50'}`}><ImageIcon className="h-5 w-5" /> Médiathèque</button>
+                  <div className="pt-10">
+                    <Button
+                      onClick={handleMigrate}
+                      disabled={loading}
+                      variant="outline"
+                      className="w-full rounded-2xl border-dashed border-2 border-primary/30 text-primary hover:bg-primary/5 font-black text-[10px] tracking-widest h-12"
+                    >
+                      {loading ? <RefreshCw className="animate-spin h-3 w-3" /> : 'INITIALISER SUPABASE'}
+                    </Button>
+                    <p className="text-[9px] text-muted-foreground text-center mt-2 px-4 uppercase font-bold opacity-50">Transférer les fichiers locaux vers la base de données</p>
+                  </div>
                 </nav>
               </div>
             </aside>

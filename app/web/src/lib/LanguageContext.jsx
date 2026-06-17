@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from './supabase';
 
 export const translations = {
   FR: {
@@ -451,16 +452,63 @@ const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(localStorage.getItem('app_lang') || 'FR');
+  const [dbTranslations, setDbTranslations] = useState({});
 
   useEffect(() => {
     localStorage.setItem('app_lang', language);
   }, [language]);
 
+  useEffect(() => {
+    const fetchTranslations = async () => {
+      const { data, error } = await supabase
+        .from('site_content')
+        .select('section_key, content')
+        .eq('language_code', language);
+
+      if (!error && data) {
+        const mapped = {};
+        data.forEach(row => {
+          mapped[row.section_key] = row.content;
+        });
+        setDbTranslations(mapped);
+      }
+    };
+
+    fetchTranslations();
+
+    // Optionnel : écouter les changements en temps réel
+    const subscription = supabase
+      .channel('site_content_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'site_content' }, () => {
+        fetchTranslations();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, [language]);
+
   const t = (path) => {
     const keys = path.split('.');
     const currentLang = translations[language] ? language : 'FR';
-    let result = translations[currentLang];
 
+    // Essayer d'abord la base de données
+    let result = dbTranslations;
+    let foundInDb = true;
+    for (const key of keys) {
+      if (result && result[key]) {
+        result = result[key];
+      } else {
+        foundInDb = false;
+        break;
+      }
+    }
+
+    if (foundInDb) return result;
+
+    // Sinon, fallback sur les fichiers locaux
+    result = translations[currentLang];
     for (const key of keys) {
       if (result && result[key]) {
         result = result[key];
