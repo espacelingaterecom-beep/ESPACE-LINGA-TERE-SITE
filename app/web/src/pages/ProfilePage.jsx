@@ -17,6 +17,9 @@ function ProfilePage() {
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
 
+  const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Utilisateur';
+  const userInitial = userName.charAt(0).toUpperCase();
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -41,7 +44,7 @@ function ProfilePage() {
               <div className="h-48 bg-primary relative">
                 <div className="absolute -bottom-16 left-12">
                   <div className="w-32 h-32 rounded-full border-4 border-card bg-primary/20 flex items-center justify-center text-white text-5xl font-bold">
-                    {user.name.charAt(0).toUpperCase()}
+                    {userInitial}
                   </div>
                 </div>
               </div>
@@ -49,7 +52,7 @@ function ProfilePage() {
               <div className="pt-20 pb-12 px-12 space-y-12">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="space-y-2">
-                    <h1 className="text-4xl font-extrabold">{user.name}</h1>
+                    <h1 className="text-4xl font-extrabold">{userName}</h1>
                     <p className="text-muted-foreground text-lg">{t('profile.subtitle')}</p>
                   </div>
                   <Button variant="outline" className="rounded-xl flex items-center">
@@ -65,7 +68,7 @@ function ProfilePage() {
                       </div>
                       <div>
                         <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">{t('profile.name')}</p>
-                        <p className="font-bold text-lg">{user.name}</p>
+                        <p className="font-bold text-lg">{userName}</p>
                       </div>
                     </div>
 

@@ -19,6 +19,9 @@ function Header() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
+  const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Utilisateur';
+  const userInitial = userName.charAt(0).toUpperCase();
+
   const isActive = (path) => location.pathname === path;
 
   const actionsLinks = [
@@ -127,9 +130,9 @@ function Header() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2 px-3 hover:bg-primary/10 rounded-full">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-                      {user.name.charAt(0).toUpperCase()}
+                      {userInitial}
                     </div>
-                    <span className="text-sm font-medium hidden xl:inline-block">{user.name}</span>
+                    <span className="text-sm font-medium hidden xl:inline-block">{userName}</span>
                     <ChevronDown className="h-4 w-4 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -190,7 +193,7 @@ function Header() {
                   />
                   {user && (
                     <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-                      {user.name.charAt(0).toUpperCase()}
+                      {userInitial}
                     </div>
                   )}
                 </div>
