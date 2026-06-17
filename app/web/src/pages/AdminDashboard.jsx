@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Settings, Users, FileText, Image as ImageIcon, Radio, Plus, Edit, Trash2, Save,
   LayoutDashboard, Globe, ArrowLeft, Search, CheckCircle2, RefreshCw, Newspaper,
-  GraduationCap, MessageSquare, Map, LogOut, User, Upload, Play, HeadphoneIcon,
+  GraduationCap, MessageSquare, Map, LogOut, User, Upload, Play, Headphones,
   ChevronRight, MoreVertical, Shield, Clock, TrendingUp, BarChart3, X, Camera, Link as LinkIcon
 } from 'lucide-react';
 import Header from '@/components/Header.jsx';
@@ -190,7 +190,7 @@ function AdminDashboard() {
                     { label: 'Visiteurs Uniques', value: '45.2k', trend: '+12.5%', icon: TrendingUp, color: 'text-blue-600' },
                     { label: 'Temps Moyen', value: '4m 32s', trend: '+2.1%', icon: Clock, color: 'text-orange-600' },
                     { label: 'Articles Publiés', value: news.length, trend: 'stable', icon: Newspaper, color: 'text-purple-600' },
-                    { label: 'Radio (Auditeurs)', value: radioStats.listeners, trend: '+18%', icon: HeadphoneIcon, color: 'text-green-600' },
+                    { label: 'Radio (Auditeurs)', value: radioStats.listeners, trend: '+18%', icon: Headphones, color: 'text-green-600' },
                   ].map((stat, i) => (
                     <div key={i} className="bg-white border rounded-3xl p-6 shadow-sm flex items-center gap-5">
                       <div className={`w-12 h-12 rounded-2xl bg-muted/50 flex items-center justify-center ${stat.color}`}>
