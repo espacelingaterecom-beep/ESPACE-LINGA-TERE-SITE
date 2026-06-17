@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 60 56% 91%;
+    --foreground: 25 20% 15%;
+    --card: 60 40% 98%;
+    --card-foreground: 25 20% 15%;
+    --popover: 60 40% 98%;
+    --popover-foreground: 25 20% 15%;
+    
+    /* Primary: Orange brûlé #E67E22 */
+    --primary: 28 80% 52%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary: Vert forêt #2E7D32 */
+    --secondary: 123 46% 34%;
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Muted */
+    --muted: 60 20% 85%;
+    --muted-foreground: 25 15% 45%;
+    
+    /* Accent: Terre #8D6E63 */
+    --accent: 16 18% 47%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 28 30% 80%;
+    --input: 28 30% 80%;
+    --ring: 28 80% 52%;
+    --radius: 0.75rem;
+
+    --sidebar-background: 60 56% 91%;
+    --sidebar-foreground: 25 20% 15%;
+    --sidebar-primary: 28 80% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 60 20% 85%;
+    --sidebar-accent-foreground: 25 20% 15%;
+    --sidebar-border: 28 30% 80%;
+    --sidebar-ring: 28 80% 52%;
+  }
+
+  .dark {
+    --background: 25 25% 10%;
+    --foreground: 35 20% 92%;
+    --card: 25 20% 14%;
+    --card-foreground: 35 20% 92%;
+    --popover: 25 20% 14%;
+    --popover-foreground: 35 20% 92%;
+    
+    --primary: 28 80% 52%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 123 46% 40%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 25 20% 20%;
+    --muted-foreground: 35 15% 65%;
+    
+    --accent: 16 18% 40%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 35 20% 92%;
+    
+    --border: 25 20% 24%;
+    --input: 25 20% 24%;
+    --ring: 28 80% 52%;
+
+    --sidebar-background: 25 25% 10%;
+    --sidebar-foreground: 35 20% 92%;
+    --sidebar-primary: 28 80% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 25 20% 20%;
+    --sidebar-accent-foreground: 35 20% 92%;
+    --sidebar-border: 25 20% 24%;
+    --sidebar-ring: 28 80% 52%;
+  }
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  overflow-x: clip;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Poppins", sans-serif;
+  text-wrap: balance;
+}
+
+p {
+  max-width: 65ch;
+}
