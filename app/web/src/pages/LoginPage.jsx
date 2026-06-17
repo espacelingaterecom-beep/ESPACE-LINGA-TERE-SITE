@@ -17,12 +17,16 @@ function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (email && password) {
-      login(email, password);
-      toast.success(t('auth.login_title'));
-      navigate('/');
+      try {
+        await login(email, password);
+        toast.success(t('auth.login_title'));
+        navigate('/');
+      } catch (error) {
+        toast.error(error.message || 'Erreur lors de la connexion');
+      }
     } else {
       toast.error('Veuillez remplir tous les champs');
     }

@@ -1,45 +1,61 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from './supabase';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('app_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-    setLoading(false);
+    // Vérifier la session actuelle
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      updateUser(session?.user ?? null);
+      setLoading(false);
+    };
+
+    getSession();
+
+    // Écouter les changements d'auth
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      updateUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = (email, password) => {
-    // Mock login
-    let role = 'user';
-    if (email === 'admin@espacelingatere.org' && password === 'admin123') {
-      role = 'admin';
-    }
-    const mockUser = { email, name: email.split('@')[0], role };
-    setUser(mockUser);
-    localStorage.setItem('app_user', JSON.stringify(mockUser));
-    return true;
+  const updateUser = (userData) => {
+    setUser(userData);
+    // Dans Supabase, vous pouvez stocker le rôle dans user_metadata ou une table 'profiles'
+    // Pour l'instant, on considère que l'email admin définit le rôle
+    setIsAdmin(userData?.email === 'admin@espacelingatere.org');
   };
 
-  const register = (email, password) => {
-    // Mock register
-    const mockUser = { email, name: email.split('@')[0], role: 'user' };
-    setUser(mockUser);
-    localStorage.setItem('app_user', JSON.stringify(mockUser));
-    return true;
+  const login = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) throw error;
+    return data;
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('app_user');
+  const register = async (email, password) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    if (error) throw error;
+    return data;
   };
 
-  const isAdmin = user?.role === 'admin';
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout, loading, isAdmin }}>
